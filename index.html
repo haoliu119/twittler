@@ -3,25 +3,116 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="moment.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="mystyle.css"/>
+
   </head>
-  <body>
+  <body id='body'>
+    <div id = "backDrop">
+
+      <div id = "header">
+        <div id = "userInputs">
+          <p id="userName">What's your username @:</p>
+          <p id="refresh">Refresh Every 
+            <select>
+              <option value="1">1</option>
+              <option value="2" selected >2</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>Seconds
+          </p>
+          <p id="listLength">Display 
+            <select>
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </select>Tweets
+          </p>
+          <button id = "userNameButton">Start Tweeting</button>
+          <button id = "tweetButton">Tweet</button>
+        </div>
+      </div>
+
+      <div id="tweets">
+        <h2>Tweets</h3>
+        <ul id="tweetList"></ul>
+      </div>
+
+    </div>
+
     <script>
-
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
+        var $tweetList = $('#tweetList'),
+            $refresh=$('#refresh').find('select'),
+            $listLength=$('#listLength').find('select'),
+            $userNameButton=$('#userNameButton'),
+            $tweetButton=$('#tweetButton'),
+            displaySize = 10,
+            refresh = 2000;
+
+        function prettyTimeStamp(timeStamp){
+          var now = new Date(),
+              dif = Math.floor((now-timeStamp)/1000); // dif in seconds
+
+          if (dif < 2){
+            return dif + " second ago";
+          }else if (dif < 60){
+            return dif + " seconds ago"
+          }else{
+            return moment(timeStamp).fromNow(); // function defined in MIT's mement.min.js
+          }    
+        };
+
+        function appendTweet(tweet){  // pass in a tweet object from streams.home[i]
+          var timeStamp=tweet.created_at,
+              $tweet = $('<li class="tweetBox"></li>'),
+              timeStamp=prettyTimeStamp(timeStamp);
+
+          $tweet.append('<a class="user" href="#">@'+tweet.user+'</a><span class="timeStamp">'+timeStamp+'</span>');
+          $tweet.append('<p class = "tweetLine"><span class="tweetMessage">'+tweet.message+'</span></p>');
+          $tweet.appendTo($tweetList);
+        };
+
+        function displayTweets(){
+          var index = streams.home.length - 1,
+              stop = index - displaySize;
+          if (stop<0){stop =0};
+          $tweetList.html('');
+          while(index > stop){
+            appendTweet(streams.home[index]);
+            index -= 1;
+          }
+
+          $('.user').on('click', function(event){
+            event.stopPropagation();
+            event.preventDefault();
+            console.log($(this).text());
+          });
+        };
+
+        displayTweets();
+        var timerID= setInterval(displayTweets,refresh);
+
+        $refresh.change(function(){
+          window.clearInterval(timerID);
+          refresh = $(this).val()*1000;
+          displayTweets();
+          timerID=setInterval(displayTweets,refresh);
+        });
+
+        $listLength.change(function(){
+          displaySize=$(this).val();
+          displayTweets();
+        });
+
+        $userNameButton.on('click',function(){
+          $userNameButton.fadeToggle();
+          $tweetButton.fadeToggle();
+        });
 
       });
-
     </script>
   </body>
 </html>

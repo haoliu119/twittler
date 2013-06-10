@@ -1,0 +1,108 @@
+#body{
+  background-color: #C9DEF2; 
+}
+#backDrop{
+  position: absolute;
+  background-color: #DAE9F7;
+  padding: 15px;
+  width: 600px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  margin-left: auto;
+  margin-right:auto;
+}
+h2{
+  margin: 0px 0px 0px 2px;
+}
+#header{
+  position: relative;
+  margin: auto;
+  height: 80px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #DEDEDE;
+  float: top;
+}
+#userName{
+  display: none;
+}
+#userInputs{
+  position: relative;
+  width: 570px;
+  height: 100%;
+  margin: 0px auto 0px auto;
+  border: 0px solid black;
+}
+#refresh{
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  margin: 0px 0px 10px 0px;
+
+}
+#listLength{
+  position: absolute;
+  left: 240px;
+  bottom: 0px;
+  margin: 0px 0px 10px 0px;
+}
+#userNameButton{
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  margin: 0px 0px 10px 0px;
+  display: block;
+  width: 100px;
+  border-radius: 5px;
+  display:block;
+}
+#tweetButton{
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  margin: 0px 0px 10px 0px;
+  display: block;
+  width: 100px;
+  border-radius: 5px;
+  display:none;
+}
+#tweets{
+  margin-top: 10px;
+  position: relative;
+  width: 580px;
+  padding: 10px 10px 50px 10px;
+  float: right;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #DEDEDE;
+
+}
+#tweetList{
+  list-style-type: none;
+  margin-left: -40px;
+  margin-top: 10px;
+}
+.tweetBox{
+    padding: 5px;
+    border: 1px solid #D6D6D6;
+    margin: -1px 0px 0px 0px;
+ }
+ .tweetLine{
+    margin: 1px 5px 0px 5px;
+ }
+ .user{
+  font-weight: bold;
+  margin: 1px 5px 0px 5px;
+  text-decoration: none;
+  color: #0B4580;
+ }
+ .timeStamp{
+  display: block;
+  float:right;
+  color: grey
+ }
+ .tweetMessage{}
+ a:hover {
+  color: #247DD6;
+  text-decoration: underline;
