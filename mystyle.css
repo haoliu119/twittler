@@ -1,6 +1,17 @@
 #body{
   background-color: #C9DEF2; 
 }
+h2 h4{
+  margin: 0px 0px 0px 2px;
+  display: inline;
+}
+ a:hover {
+  color: #247DD6;
+  text-decoration: underline;
+}
+.bold{
+  font-weight: bold;
+}
 #backDrop{
   position: absolute;
   background-color: #DAE9F7;
@@ -12,9 +23,6 @@
   margin-left: auto;
   margin-right:auto;
 }
-h2{
-  margin: 0px 0px 0px 2px;
-}
 #header{
   position: relative;
   margin: auto;
@@ -24,49 +32,63 @@ h2{
   border: 1px solid #DEDEDE;
   float: top;
 }
-#userName{
-  display: none;
-}
 #userInputs{
   position: relative;
   width: 570px;
-  height: 100%;
+  height: 90%;
   margin: 0px auto 0px auto;
-  border: 0px solid black;
+}
+#userNamePrompt{
+  position: absolute;
+  display: block;
+  top:0px;
+  left:0px;
+  margin: 0px;
+}
+#userName{
+  position: relative;
+  display: none;
+  top:0px;
+  left:0px;
+  margin: 10px 0px 3px 0px;
+  font-weight: bold;
+}
+#inputField{
+  position: relative;
+  display: block;
+  float:right;
+  width:395px;
+  margin: 0px
 }
 #refresh{
   position: absolute;
   left: 0px;
-  bottom: 0px;
-  margin: 0px 0px 10px 0px;
-
+  bottom: 10px;
+  margin: 0px;
 }
 #listLength{
   position: absolute;
-  left: 240px;
-  bottom: 0px;
-  margin: 0px 0px 10px 0px;
+  left: 200px;
+  bottom: 10px;
+  margin: 0px;
 }
 #userNameButton{
   position: absolute;
   right: 0px;
-  bottom: 0px;
-  margin: 0px 0px 10px 0px;
-  display: block;
-  width: 100px;
+  bottom: 10px;
+  width: 150px;
   border-radius: 5px;
-  display:block;
+  display: block;
 }
 #tweetButton{
   position: absolute;
   right: 0px;
-  bottom: 0px;
-  margin: 0px 0px 10px 0px;
-  display: block;
+  bottom: 10px;
   width: 100px;
   border-radius: 5px;
-  display:none;
+  display: none;
 }
+
 #tweets{
   margin-top: 10px;
   position: relative;
@@ -76,9 +98,24 @@ h2{
   background-color: #ffffff;
   border-radius: 5px;
   border: 1px solid #DEDEDE;
-
 }
-#tweetList{
+#userTweets{
+  margin-top: 10px;
+  position: relative;
+  width: 365px;
+  padding: 10px 10px 50px 10px;
+  float: left;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #DEDEDE;
+  display: none;
+}
+.close{
+  position: absolute;
+  top:10px;
+  right: 10px;
+}
+.tweetList{
   list-style-type: none;
   margin-left: -40px;
   margin-top: 10px;
@@ -103,6 +140,3 @@ h2{
   color: grey
  }
  .tweetMessage{}
- a:hover {
-  color: #247DD6;
-  text-decoration: underline;

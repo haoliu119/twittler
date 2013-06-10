@@ -12,7 +12,11 @@
 
       <div id = "header">
         <div id = "userInputs">
-          <p id="userName">What's your username @:</p>
+          <p id="userName"></p>
+          <p id="userNamePrompt" class="bold">What's your username @ </p>
+          <input id='inputField' type='text'></input>
+          
+          <p></p>
           <p id="refresh">Refresh Every 
             <select>
               <option value="1">1</option>
@@ -29,14 +33,18 @@
               <option value="30">30</option>
             </select>Tweets
           </p>
-          <button id = "userNameButton">Start Tweeting</button>
-          <button id = "tweetButton">Tweet</button>
+          <button id = "userNameButton" class='bold'>Start Tweeting</button>
+          <button id = "tweetButton" class='bold'>Tweet</button>
         </div>
       </div>
 
-      <div id="tweets">
-        <h2>Tweets</h3>
-        <ul id="tweetList"></ul>
+      <div id='userTweets'>
+        <h4>Tweets from<span class="user"></span></h4><a href="#" class='close'>Close</a>
+        <ul class='tweetList'></us>
+      </div>
+
+      <div id="tweets"><h2>Tweets</h3>
+        <ul class="tweetList"></ul>
       </div>
 
     </div>
@@ -44,13 +52,18 @@
     <script>
       $(document).ready(function(){
 
-        var $tweetList = $('#tweetList'),
+        var $masterTweetList = $('#tweets').find('ul'),
+            $userTweetList = $('#userTweets').find('ul'),  
             $refresh=$('#refresh').find('select'),
             $listLength=$('#listLength').find('select'),
             $userNameButton=$('#userNameButton'),
             $tweetButton=$('#tweetButton'),
+            $inputField=$('#inputField'),
             displaySize = 10,
-            refresh = 2000;
+            refresh = 2000,
+            userName,
+            tweetListUserName,
+            expandedView=false;
 
         function prettyTimeStamp(timeStamp){
           var now = new Date(),
@@ -65,51 +78,103 @@
           }    
         };
 
-        function appendTweet(tweet){  // pass in a tweet object from streams.home[i]
+        function appendTweet(tweet, $tweetList, masterList){  // pass in a tweet object from streams.home[i]
           var timeStamp=tweet.created_at,
               $tweet = $('<li class="tweetBox"></li>'),
               timeStamp=prettyTimeStamp(timeStamp);
 
-          $tweet.append('<a class="user" href="#">@'+tweet.user+'</a><span class="timeStamp">'+timeStamp+'</span>');
+          if(masterList){$tweet.append('<a class="user" href="#">@'+tweet.user+'</a>');}
+          $tweet.append('<span class="timeStamp">'+timeStamp+'</span>');
           $tweet.append('<p class = "tweetLine"><span class="tweetMessage">'+tweet.message+'</span></p>');
           $tweet.appendTo($tweetList);
         };
 
-        function displayTweets(){
-          var index = streams.home.length - 1,
+
+        function displayTweets(tweetArray, $tweetList, masterList){ // display all tweets in the "Tweets" list
+          var index = tweetArray.length - 1,
               stop = index - displaySize;
           if (stop<0){stop =0};
           $tweetList.html('');
           while(index > stop){
-            appendTweet(streams.home[index]);
+            appendTweet(tweetArray[index], $tweetList, masterList);
             index -= 1;
           }
-
-          $('.user').on('click', function(event){
-            event.stopPropagation();
-            event.preventDefault();
-            console.log($(this).text());
-          });
         };
 
-        displayTweets();
-        var timerID= setInterval(displayTweets,refresh);
+        function refreshTweets(){ // refresh all tweet lists, master and user tweet lists
+          displayTweets(streams.home, $masterTweetList, true);  // refresh master tweet list
+          if (expandedView){  // refresh user tweet list
+            displayTweets(streams.users[tweetListUserName], $userTweetList, false);
+          }
 
-        $refresh.change(function(){
+          $('.user').on('click', function(event){ // event listener: click on username to display user tweet list
+            event.stopPropagation();
+            event.preventDefault();
+            if (!expandedView){
+              $('#backDrop').animate({'width':'1000px'}, function(){
+                $('#userTweets').slideDown();
+              });
+              expandedView=true;
+            }
+            var temp = $(this).text().slice(1);
+            if (tweetListUserName != temp){
+              tweetListUserName=temp;
+              $('#userTweets').find('span').text('@'+tweetListUserName);
+              displayTweets(streams.users[tweetListUserName], $userTweetList, false);
+            }
+          });
+
+        }
+        // Inititally display tweet list and kick off refresh interval
+        refreshTweets();
+        var timerID= setInterval(refreshTweets,refresh);
+
+        // Event Listeners /////////////////////////////////////
+
+        $refresh.change(function(){   // changes refresh rate from dropdown menu
           window.clearInterval(timerID);
           refresh = $(this).val()*1000;
-          displayTweets();
-          timerID=setInterval(displayTweets,refresh);
+          refreshTweets();
+          timerID=setInterval(refreshTweets,refresh);
         });
 
-        $listLength.change(function(){
+        $listLength.change(function(){  // changes how many tweets to display from dropdown menu
           displaySize=$(this).val();
-          displayTweets();
+          refreshTweets();
         });
 
-        $userNameButton.on('click',function(){
-          $userNameButton.fadeToggle();
-          $tweetButton.fadeToggle();
+        $userNameButton.on('click',function(){  // get username when button clicked
+          userName=$inputField.val();
+          if (userName){
+            streams.users[userName] = [];
+            $inputField.val('')
+            $userNameButton.fadeToggle(200);
+            $tweetButton.fadeToggle(200);
+            $('#header').animate({'height':'100px'});
+            $inputField.animate({'width':'100%'});
+            $('#userNamePrompt').hide(); 
+            $('#userName').text('@'+userName+':').fadeToggle();         
+          }
+        });
+        $tweetButton.on('click',function(){ // get user tweet when button clicked
+          var tweet=$inputField.val();
+          if(tweet){
+            $inputField.val('');
+            addTweet({
+              user: userName,
+              message: tweet,
+              created_at: new Date()
+            });
+          }
+        });
+
+        $('#userTweets').find('.close').on('click',function(event){
+            event.stopPropagation();
+            event.preventDefault();
+            expandedView = false;
+            $('#userTweets').slideUp(function(){
+              $('#backDrop').animate({'width':'600px'});
+            });
         });
 
       });
